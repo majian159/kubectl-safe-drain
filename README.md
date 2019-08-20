@@ -1,0 +1,2 @@
+# kubectl-sdrain
+safe drain
