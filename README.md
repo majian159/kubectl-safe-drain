@@ -43,18 +43,18 @@ PDB 只会保障 Pod 不被驱逐, 而不会帮助它在其它可用节点上重
 
 # 效果
 ## 首先我们有一个 Deployment 配置如下
-   ```yaml
-    spec:
-        replicas: 2
-    strategy:
-        type: RollingUpdate
-        rollingUpdate:
-            maxSurge: 1
-            maxUnavailable: 0
-   ```  
-    操作前有两个可用 Pod  
-    ![](https://cdn.jsdelivr.net/gh/majian159/blogs@master/images/2020_04_29_19_42_iaR3Cs%20.jpg)
-    ![](https://cdn.jsdelivr.net/gh/majian159/blogs@master/images/2020_04_29_19_42_Nb8NZA%20.png)
+```yaml
+spec:
+    replicas: 2
+strategy:
+    type: RollingUpdate
+    rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
+```  
+操作前有两个可用 Pod  
+![](https://cdn.jsdelivr.net/gh/majian159/blogs@master/images/2020_04_29_19_42_iaR3Cs%20.jpg)
+![](https://cdn.jsdelivr.net/gh/majian159/blogs@master/images/2020_04_29_19_42_Nb8NZA%20.png)
 ## 执行 `safe-drain`
 ![](https://cdn.jsdelivr.net/gh/majian159/blogs@master/images/2020_04_29_19_43_xc2Jhz%20.png)
 
