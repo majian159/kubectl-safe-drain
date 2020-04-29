@@ -101,3 +101,7 @@ kubectl safe-drain NODE
 # 所以如有需要可以继续使用 drain 命令来确保节点被驱逐
 kubectl drain NODE
 ```
+
+# TODO
+1. 考虑节点亲和力和节点选择器的情况
+2. 输出更为友好的提示信息
