@@ -35,7 +35,7 @@ PDB 只会保障 Pod 不被驱逐, 而不会帮助它在其它可用节点上重
 # 逻辑和原理
 1. 先将需要排空的节点标记为不可调度 (kubectl cordon)
 2. 在找到该节点上的 Deployment 和 StatefulSet 资源
-3. 修改 Deployment 和 StatefulSet 的 PodTemplate, 让K8S根据对应的更新策略重新部署Pod, 这时候需要排空的节点不可被调度, 从而达到现将排空节点中的Pod安全重建到其它节点的逻辑。
+3. 修改 Deployment 和 StatefulSet 的 PodTemplate, 让K8S根据对应的更新策略重新部署Pod, 这时候需要排空的节点不可被调度, 从而达到先将排空节点中的Pod安全重建到其它节点的逻辑。
 
 # 目前支持安全迁移的资源
 1. Deployment
