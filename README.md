@@ -42,7 +42,7 @@ PDB 只会保障 Pod 不被驱逐, 而不会帮助它在其它可用节点上重
 2. StatefulSet
 
 # 效果
-1. 首先我们有一个 Deployment 配置如下
+## 首先我们有一个 Deployment 配置如下
    ```yaml
     spec:
         replicas: 2
@@ -51,17 +51,20 @@ PDB 只会保障 Pod 不被驱逐, 而不会帮助它在其它可用节点上重
         rollingUpdate:
             maxSurge: 1
             maxUnavailable: 0
-   ```
-    操作前有两个可用 Pod
+   ```  
+    操作前有两个可用 Pod  
     ![](https://cdn.jsdelivr.net/gh/majian159/blogs@master/images/2020_04_29_19_42_iaR3Cs%20.jpg)
     ![](https://cdn.jsdelivr.net/gh/majian159/blogs@master/images/2020_04_29_19_42_Nb8NZA%20.png)
-2. 执行 `safe-drain`
-    ![](https://cdn.jsdelivr.net/gh/majian159/blogs@master/images/2020_04_29_19_43_xc2Jhz%20.png)
-    **查看 Deployment 变化过程**
-    ![](https://cdn.jsdelivr.net/gh/majian159/blogs@master/images/2020_04_29_19_43_lmDtYv%20.png)
-    **查看 Pod 变化过程**
-    ![](https://cdn.jsdelivr.net/gh/majian159/blogs@master/images/2020_04_29_19_43_Nd6lPE%20.png)
-## 简述
+## 执行 `safe-drain`
+![](https://cdn.jsdelivr.net/gh/majian159/blogs@master/images/2020_04_29_19_43_xc2Jhz%20.png)
+
+## 查看 Deployment 变化过程
+![](https://cdn.jsdelivr.net/gh/majian159/blogs@master/images/2020_04_29_19_43_lmDtYv%20.png)
+
+## 查看 Pod 变化过程
+![](https://cdn.jsdelivr.net/gh/majian159/blogs@master/images/2020_04_29_19_43_Nd6lPE%20.png)
+
+## 流程简述
 从 Deployment watch 的信息中可见最小 Ready 数没有小于 2, 从 Pod watch 的信息中可见 kind-worker2 上承载了 2 个准备就绪的 nginx Pod, 也就是说 nginx 从 kind-worker 安全的移动到了 kind-worker2 节点上。
 
 # 安装
