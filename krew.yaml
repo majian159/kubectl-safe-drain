@@ -1,0 +1,32 @@
+apiVersion: krew.googlecontainertools.github.com/v1alpha2
+kind: Plugin
+metadata:
+  name: safe-drain
+spec:
+  version: "v0.0.1"
+  homepage: https://github.com/majian159/kubectl-sdrain
+  shortDescription: "Safe drain node."
+  description: |
+    Safe drain node, complete the eviction of Pod according to the update strategy.
+  platforms:
+    - selector:
+        matchLabels:
+          os: darwin
+          arch: amd64
+      uri: https://github.com/majian159/kubectl-sdrain/releases/download/v0.0.1-preview1/kubectl-safe-drain_0.0.1-preview1_darwin_amd64.tar.gz
+      sha256: 8af4495706c2cbf119c851df5e4e2ef8999b79ad25d9533793f5a62759a6fe8c
+      bin: ./kubectl-safe-drain
+    - selector:
+        matchLabels:
+          os: linux
+          arch: amd64
+      uri: https://github.com/majian159/kubectl-sdrain/releases/download/v0.0.1-preview1/kubectl-safe-drain_0.0.1-preview1_linux_amd64.tar.gz
+      sha256: 2a92ccb47c665302a670d544c55752775c89e3d3d9f425fa5265d4932d2eb66f
+      bin: ./kubectl-safe-drain
+    - selector:
+        matchLabels:
+          os: windows
+          arch: amd64
+      uri: https://github.com/majian159/kubectl-sdrain/releases/download/v0.0.1-preview1/kubectl-safe-drain_0.0.1-preview1_windows_amd64.zip
+      sha256: b2a122fac685e94990c14b0cc1bb9787fa2e62d08c008e04b2f8c3cd05ddc0df
+      bin: ./kubectl-safe-drain.exe
