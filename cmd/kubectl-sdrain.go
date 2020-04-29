@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	flags := pflag.NewFlagSet("kubectl-sdrain", pflag.ExitOnError)
+	flags := pflag.NewFlagSet("kubectl-safe-drain", pflag.ExitOnError)
 	pflag.CommandLine = flags
 
 	cf := genericclioptions.NewConfigFlags(true)
