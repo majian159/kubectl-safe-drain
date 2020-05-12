@@ -1,7 +1,7 @@
 # Kubectl-Safe-Drain
 A kubectl plug-in, according to the update strategy, safe drain node and dispatch pod to other available nodes.
 
-# Summary / [中文介绍](https://github.com/maxzhang1985/kubectl-safe-drain/blob/master/README.md "中文介绍")
+# Summary / [中文介绍](https://github.com/majian159/kubectl-safe-drain/blob/master/README-zh-CN.md "中文介绍")
 
 # Why the Needed
 You can use kubectl drain to safely evict all of your pods from a node before you perform maintenance on the node (e.g. kernel upgrade, hardware maintenance, etc.). Safe evictions allow the pod’s containers to gracefully terminate and will respect the PodDisruptionBudgets you have specified.
