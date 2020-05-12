@@ -1,49 +1,52 @@
-# kubectl-safe-drain
-一个 kubectl 插件, 用于更为安全的排空节点。  
-对于 Deployment 和 StatefulSet 资源会根据其配置的更新策略先将Pod调度到其它可用节点。
+# Kubectl-Safe-Drain
+A kubectl plug-in, according to the update strategy, safe drain node and dispatch pod to other available nodes.
 
-# 为什么需要
-当我们要进行 K8S 节点维护时往往需要执行 `kubectl drain`, 等待节点上的 Pod 被驱逐后再进行维护动作。  
+# Summary / [中文介绍](https://github.com/maxzhang1985/kubectl-safe-drain/blob/master/README.md "中文介绍")
 
-但 `drain` 动作有一个问题, 他不会考虑资源所定义的 UpdateStrategy, 而直接强制驱逐或删除 Pod, 这样就会导致 Deployment 或 StatefulSet 资源的 Pod 达不到所设置的策略数.  
+# Why the Needed
+You can use kubectl drain to safely evict all of your pods from a node before you perform maintenance on the node (e.g. kernel upgrade, hardware maintenance, etc.). Safe evictions allow the pod’s containers to gracefully terminate and will respect the PodDisruptionBudgets you have specified.
 
-## 思考一个案例
-1. 有一个 Deployment 资源, 它使用了如下配置
-   ```yaml
-    replicas: 2
-    strategy:
-        rollingUpdate:
-        maxSurge: 1
-        maxUnavailable: 0
-    type: RollingUpdate
-   ```
-   副本数为 3, 采用了滚动更新, 并且先启动完成一个 Pod 后再进行旧 Pod 的删除(最大不可用为0,最小可用为2).
-2. 当下集群有 2 个 worker 节点
-   意味着, 其中一个节点被调度了 2 个 Pod, 其中一个节点被调度了 1 个 Pod.  
-   假设 node1 运行着 pod1 和 pod3, node2 运行着 pod2.
-3. 这时候 drain node1, 会出现 Deployment 只有一个 Pod 可用
+But kubectl drain has a problem , that  it forces the pod to be evicted or delete, instead of the update strategy defined by the resource such as replicas strategy .
 
-## 更糟糕的情况
-Deployment 的 Pod 全部运行在需要维护的节点上, 这时候执行 `drain` 那将是一个灾难, 这个 Deployment 在新的Pod启动之前它无法在对外提供服务了, 恢复的时间取决于新 Pod 的启动速度。
+# An example
+There is a deployment resource :
+```yml
+ replicas: 2
+ strategy:
+     rollingUpdate:
+     maxSurge: 1
+     maxUnavailable: 0
+ type: RollingUpdate
+```
 
-## 与 PDB (Pod Disruption Budget) 有什么区别?
-PDB 只会保障 Pod 不被驱逐, 而不会帮助它在其它可用节点上重建。  
-使用了 PDB 后能防止服务不可用的尴尬情况，但它还是需要人工手动迁移 Pod。  
+The number of resource copies is 3, and rolling update is adopted. One pod is started before deleting the old pod (the maximum unavailable is 0, and the minimum available is 2)
 
-**理想的情况是 PDB 需要使用, 防止严苛情况下服务不可用的问题。**
+At present, there are two worker nodes in the cluster, one of which is scheduled with two pod, the other is scheduled with one pod.
 
-# 逻辑和原理
-1. 先将需要排空的节点标记为不可调度 (kubectl cordon)
-2. 在找到该节点上的 Deployment 和 StatefulSet 资源
-3. 修改 Deployment 和 StatefulSet 的 PodTemplate, 让K8S根据对应的更新策略重新部署Pod, 这时候需要排空的节点不可被调度, 从而达到先将排空节点中的Pod安全重建到其它节点的逻辑。
+Suppose node1 is running POD1 and POD3, and the node2 is running POD2.
 
-# 目前支持安全迁移的资源
+At this time,kubectl drain NODE1 will show that there is only one pod available for deployment.
+
+# Worse, it's all on the nodes that need to be maintained
+It will be a disaster to execute drain at this time. Before the new pod starts, the deployment cannot provide external services. The recovery time depends on the startup speed of the new pod.
+
+# What's the difference with Pod Disruption Budget?
+Pod Disruption Budget will only protect pod from being evicted, and will not help it rebuild on other available nodes.
+
+It prevents service unavailability, but it still requires manual migration of pod
+
+# The principle of kubectl safe drain
+* Mark nodes as non schedulable (kubectl cordon).
+* Locate the deployment and statefullset resources on this node.
+* Modify Pod Template and save that rebuild to other nodes.
+
+# Support safe migration of resources
 1. Deployment
 2. StatefulSet
 
-# 效果
-## 首先我们有一个 Deployment 配置如下
-```yaml
+# Demo
+Deployment:
+```yml
 spec:
     replicas: 2
 strategy:
@@ -51,57 +54,69 @@ strategy:
     rollingUpdate:
         maxSurge: 1
         maxUnavailable: 0
-```  
-操作前有两个可用 Pod  
+```
+
+
+
+
+
+
+
+## Has two pods
 ![](https://cdn.jsdelivr.net/gh/majian159/blogs@master/images/2020_04_29_19_42_iaR3Cs%20.jpg)
 ![](https://cdn.jsdelivr.net/gh/majian159/blogs@master/images/2020_04_29_19_42_Nb8NZA%20.png)
-## 执行 `safe-drain`
+
+ ## Execute safe-drain
+
 ![](https://cdn.jsdelivr.net/gh/majian159/blogs@master/images/2020_04_29_19_43_xc2Jhz%20.png)
 
-## 查看 Deployment 变化过程
+## View deployment changes
 ![](https://cdn.jsdelivr.net/gh/majian159/blogs@master/images/2020_04_29_19_43_lmDtYv%20.png)
 
-## 查看 Pod 变化过程
+## View pod changes
 ![](https://cdn.jsdelivr.net/gh/majian159/blogs@master/images/2020_04_29_19_43_Nd6lPE%20.png)
 
-## 流程简述
-从 Deployment watch 的信息中可见最小 Ready 数没有小于 2, 从 Pod watch 的信息中可见 kind-worker2 上承载了 2 个准备就绪的 nginx Pod, 也就是说 nginx 从 kind-worker 安全的移动到了 kind-worker2 节点上。
 
-# 安装
-## 二进制文件
-### Linux
+# Install
+## Linux Binary
 ```shell script
 curl -sLo sdrain.tgz https://github.com/majian159/kubectl-safe-drain/releases/download/v0.0.1-preview1/kubectl-safe-drain_0.0.1-preview1_linux_amd64.tar.gz \
 && tar xf sdrain.tgz \
 && rm -f sdrain.tgz \
 && mv kubectl-safe-drain /usr/local/bin/kubectl-safe_drain
 ```
-### macOS
+## MacOS Binary
 ```shell script
 curl -sLo sdrain.tgz https://github.com/majian159/kubectl-safe-drain/releases/download/v0.0.1-preview1/kubectl-safe-drain_0.0.1-preview1_darwin_amd64.tar.gz \
 && tar xf sdrain.tgz \
 && rm -f sdrain.tgz \
 && mv kubectl-safe-drain /usr/local/bin/kubectl-safe_drain
 ```
-### Windows
+## Windows Binary
 https://github.com/majian159/kubectl-safe-drain/releases/download/v0.0.1-preview1/kubectl-safe-drain_0.0.1-preview1_windows_amd64.tar.gz
 
-## 基于 Krew
+## Krew Install
 ```shell script
 curl -O https://raw.githubusercontent.com/majian159/kubectl-safe-drain/master/krew.yaml \
 && kubectl krew install --manifest=krew.yaml \
 && rm -f krew.yaml
 ```
 
-# 使用
+# How to use
 ```sh
 kubectl safe-drain NODE
-
-# safe-drain并没有调用 drain命令, 而是利用了 SchedulingDisabled 机制
-# 所以如有需要可以继续使用 drain 命令来确保节点被驱逐
-kubectl drain NODE
 ```
 
 # TODO
-1. 考虑节点亲和力和节点选择器的情况
-2. 输出更为友好的提示信息
+
+* Node selector , such as annotationsֵ or labels of Kubernetes-Pod 
+* Output more friendly prompt information
+
+
+
+
+
+
+
+
+
