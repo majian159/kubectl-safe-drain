@@ -4,7 +4,7 @@ metadata:
   name: safe-drain
 spec:
   version: "v0.0.1"
-  homepage: https://github.com/majian159/kubectl-sdrain
+  homepage: https://github.com/majian159/kubectl-safe-drain
   shortDescription: "Safe drain node."
   description: |
     Safe drain node, complete the eviction of Pod according to the update strategy.
@@ -12,21 +12,77 @@ spec:
     - selector:
         matchLabels:
           os: darwin
+          arch: arm64
+      uri: https://github.com/majian159/kubectl-safe-drain/releases/download/v0.0.1-preview2/kubectl-safe-drain_0.0.1-preview2_darwin_arm64.tar.gz
+      sha256: f9e974d69b6a595973ef448b7ba1e51686ac8c051c5d94ce0ebc1d943602d689
+      bin: ./kubectl-safe-drain
+    - selector:
+        matchLabels:
+          os: darwin
           arch: amd64
-      uri: https://github.com/majian159/kubectl-sdrain/releases/download/v0.0.1-preview1/kubectl-safe-drain_0.0.1-preview1_darwin_amd64.tar.gz
-      sha256: 8af4495706c2cbf119c851df5e4e2ef8999b79ad25d9533793f5a62759a6fe8c
+      uri: https://github.com/majian159/kubectl-safe-drain/releases/download/v0.0.1-preview2/kubectl-safe-drain_0.0.1-preview2_darwin_amd64.tar.gz
+      sha256: 5831ff66784841aeb4d3274d9a241262b33e064b89e1b0f545c754d9da074029
       bin: ./kubectl-safe-drain
     - selector:
         matchLabels:
           os: linux
           arch: amd64
-      uri: https://github.com/majian159/kubectl-sdrain/releases/download/v0.0.1-preview1/kubectl-safe-drain_0.0.1-preview1_linux_amd64.tar.gz
-      sha256: 2a92ccb47c665302a670d544c55752775c89e3d3d9f425fa5265d4932d2eb66f
+      uri: https://github.com/majian159/kubectl-safe-drain/releases/download/v0.0.1-preview2/kubectl-safe-drain_0.0.1-preview2_linux_arm64.tar.gz
+      sha256: 230b22faa433ffa57e8d1a9d5a8646ce51d9d1c88bdb8a50091c2989219163de
+      bin: ./kubectl-safe-drain
+    - selector:
+        matchLabels:
+          os: linux
+          arch: amd64
+      uri: https://github.com/majian159/kubectl-safe-drain/releases/download/v0.0.1-preview2/kubectl-safe-drain_0.0.1-preview2_linux_amd64.tar.gz
+      sha256: d40211c8fad1071d44e11440e345a21cf4779847b033fe4f9392eacd13cf4a00
+      bin: ./kubectl-safe-drain
+    - selector:
+        matchLabels:
+          os: linux
+          arch: amd64
+      uri: https://github.com/majian159/kubectl-safe-drain/releases/download/v0.0.1-preview2/kubectl-safe-drain_0.0.1-preview2_linux_386.tar.gz
+      sha256: 9a0e9332911cbb67ec1503e3505d55d2ea2df196eb5cf7ed9ba65edb82451472
       bin: ./kubectl-safe-drain
     - selector:
         matchLabels:
           os: windows
           arch: amd64
-      uri: https://github.com/majian159/kubectl-sdrain/releases/download/v0.0.1-preview1/kubectl-safe-drain_0.0.1-preview1_windows_amd64.zip
-      sha256: b2a122fac685e94990c14b0cc1bb9787fa2e62d08c008e04b2f8c3cd05ddc0df
+      uri: https://github.com/majian159/kubectl-safe-drain/releases/download/v0.0.1-preview2/kubectl-safe-drain_0.0.1-preview2_windows_arm64.tar.gz
+      sha256: 49c97c399cbbe1a87acd1176bfc1dea0076d4354e3e0eea48e4a0cbdaf6ac4e4
       bin: ./kubectl-safe-drain.exe
+    - selector:
+        matchLabels:
+          os: windows
+          arch: amd64
+      uri: https://github.com/majian159/kubectl-safe-drain/releases/download/v0.0.1-preview2/kubectl-safe-drain_0.0.1-preview2_windows_amd64.tar.gz
+      sha256: 0a4005b48980cc03f2cf741dbf9a157fa4144ec85cf6c3f08c35251a1a5f20dc
+      bin: ./kubectl-safe-drain.exe
+    - selector:
+        matchLabels:
+          os: windows
+          arch: amd64
+      uri: https://github.com/majian159/kubectl-safe-drain/releases/download/v0.0.1-preview2/kubectl-safe-drain_0.0.1-preview2_windows_386.tar.gz
+      sha256: e48bdd5676ec9e7a0a23c7c3ba94aa19f1fad3c70088b0d6a8b984c0a9b15dd0
+      bin: ./kubectl-safe-drain.exe
+    - selector:
+        matchLabels:
+          os: freebsd
+          arch: arm64
+      uri: https://github.com/majian159/kubectl-safe-drain/releases/download/v0.0.1-preview2/kubectl-safe-drain_0.0.1-preview2_freebsd_arm64.tar.gz
+      sha256: 386e08c9971a9e52968f10257c949f18b94b088e2a99e711ed43e9aaef9c38fb
+      bin: ./kubectl-safe-drain
+    - selector:
+        matchLabels:
+          os: freebsd
+          arch: arm64
+      uri: https://github.com/majian159/kubectl-safe-drain/releases/download/v0.0.1-preview2/kubectl-safe-drain_0.0.1-preview2_freebsd_amd64.tar.gz
+      sha256: 0d4e728f2e42aad80b1eedfbad8651301386555447345c5d60c47d4dd6ed59f6
+      bin: ./kubectl-safe-drain
+    - selector:
+        matchLabels:
+          os: freebsd
+          arch: arm64
+      uri: https://github.com/majian159/kubectl-safe-drain/releases/download/v0.0.1-preview2/kubectl-safe-drain_0.0.1-preview2_freebsd_386.tar.gz
+      sha256: 5cbbb631e7f96583fac70101cf689ca61fdcf458aca3b525ccac56b967376aef
+      bin: ./kubectl-safe-drain
